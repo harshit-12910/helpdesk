@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
 import { Bell, User, LogOut, LayoutDashboard, Ticket, ClipboardList, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
   const [selectedSidebarItem, setSelectedSidebarItem] = useState('dashboard');
+  const navigate = useNavigate(); 
+
+    const handleSidebarClick = (item, path) => {
+    setSelectedSidebarItem(item);
+    navigate(path);
+    };
 
   const statCardsData = [
     { title: "Total Tickets", value: "12", bg: "bg-[#2F82FF]", text: "text-[#05386B]" },
@@ -12,7 +19,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100 font-inter">
+    <div className="flex flex-col min-h-screen bg-[#ffffff] font-inter">
       {/* Top Navbar */}
       <nav className="flex items-center justify-between bg-[#55D6C2] px-6 py-3 shadow-md">
         <h1 className="text-[48px] font-bold italic text-[#FFFFFF]">Helpdesk</h1>
@@ -31,10 +38,25 @@ export default function Dashboard() {
         {/* Sidebar */}
         <aside className="w-64 bg-gray-200 p-5 shadow-md relative z-10">
           <ul className="space-y-3">
-            <SidebarItem icon={<LayoutDashboard size={20} />} label="Dashboard" isActive={selectedSidebarItem === 'dashboard'} onClick={() => setSelectedSidebarItem('dashboard')} />
-            <SidebarItem icon={<Ticket size={20} />} label="New Ticket" isActive={selectedSidebarItem === 'newTicket'} onClick={() => setSelectedSidebarItem('newTicket')} />
-            <SidebarItem icon={<ClipboardList size={20} />} label="My Ticket" isActive={selectedSidebarItem === 'myTicket'} onClick={() => setSelectedSidebarItem('myTicket')} />
-          </ul>
+              <SidebarItem
+                icon={<LayoutDashboard size={20} />}
+                label="Dashboard"
+                isActive={selectedSidebarItem === 'dashboard'}
+                onClick={() => handleSidebarClick('dashboard', '/dashboard')} // <--- UPDATE onClick
+              />
+              <SidebarItem
+                icon={<Ticket size={20} />}
+                label="New Ticket"
+                isActive={selectedSidebarItem === 'newTicket'}
+                onClick={() => handleSidebarClick('newTicket', '/new-ticket')} // <--- UPDATE onClick
+              />
+              <SidebarItem
+                icon={<ClipboardList size={20} />}
+                label="My Ticket"
+                isActive={selectedSidebarItem === 'myTicket'}
+                onClick={() => handleSidebarClick('myTicket', '/my-ticket')} // <--- UPDATE onClick
+              />
+            </ul>
         </aside>
 
         {/* Main Content + Footer wrapper */}
