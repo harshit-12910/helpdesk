@@ -29,10 +29,33 @@ export default function NewTicket() {
   const [description, setDescription] = useState('');
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log({ ticketNo, date, name, department, subject, category, type, priority, description });
-    console.log('Ticket submitted! (Check console for data)');
+  e.preventDefault();
+
+  const newTicket = {
+    id: `TICKET-${Date.now()}`,
+    ticketNo,
+    date,
+    name,
+    department,
+    subject,
+    category,
+    type,
+    priority,
+    description,
+    status: 'In Progress',
+    supportedBy: 'IT Support',
+    rate: 0,
+    createdAt: new Date(),
+    userId: 'currentUserId', 
   };
+
+  const existing = JSON.parse(localStorage.getItem('tickets')) || [];
+  existing.unshift(newTicket); 
+  localStorage.setItem('tickets', JSON.stringify(existing));
+
+  navigate('/my-ticket');
+};
+
 
   return (
     <div className="flex flex-col min-h-screen bg-[#FFFFFF] font-inter">
@@ -113,7 +136,6 @@ export default function NewTicket() {
               <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-4">
                 <div className="flex-1 bg-gray-100 p-4 rounded-md border border-gray-300 text-center text-gray-600">
                   <p>[ ReCAPTCHA Widget Placeholder ]</p>
-                  <p className="text-xs mt-2">This is a sample frontend representation.</p>
                 </div>
                 <button type="submit" className="w-full md:w-auto px-8 py-3 bg-[#55D6C2] text-white font-bold rounded-md shadow-lg hover:bg-[#40B0A0] transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#55D6C2] focus:ring-offset-2">
                   Submit Ticket
