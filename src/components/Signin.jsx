@@ -1,4 +1,3 @@
-// Signin.jsx (Updated Forgot Password Link)
 import { useState } from "react";
 import Input from "./Input";
 import Button from "./Button";
@@ -14,26 +13,27 @@ export default function Signin() {
     e.preventDefault();
     setErrorMessage("");
 
-    if (username && password) {
-      console.log("Attempting login with:", { username, password });
+    if (!username || !password) {
+      setErrorMessage("Please enter both username and password.");
+      return;
+    }
+
+    if (username === "admin" && password === "weanalyz") {
       navigate("/dashboard");
     } else {
-      setErrorMessage("Please enter both username and password.");
+      setErrorMessage("Invalid username or password.");
     }
   };
 
-  // Function to handle navigation to Sign Up page
   const handleSignUpClick = (e) => {
     e.preventDefault();
     navigate("/signup");
   };
 
-  // New function to handle navigation to Forgot Password page
   const handleForgotPasswordClick = (e) => {
     e.preventDefault();
-    navigate("/forgot-password"); // Navigate to the /forgot-password route
+    navigate("/forgot-password");
   };
-
 
   return (
     <div className="flex items-center justify-center h-screen primary-background">
@@ -73,22 +73,14 @@ export default function Signin() {
             </p>
           )}
 
-          {/*
-            Forgot password link:
-            - **CRITICAL FIX**: Changed `href="/forgot-password"` to `onClick={handleForgotPasswordClick}` for robust navigation.
-          */}
           <a
-            href="#" // Use # as href when onClick handles navigation
+            href="#"
             onClick={handleForgotPasswordClick}
             className="absolute top-[555px] left-[214px] text-[#EA0000] text-[20px] w-[151px] h-[23px] cursor-pointer"
           >
             Forgot password
           </a>
 
-          {/*
-            Sign Up link:
-            - This was already updated in the previous step.
-          */}
           <a
             href="#"
             onClick={handleSignUpClick}
