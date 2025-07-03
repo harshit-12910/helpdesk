@@ -1,39 +1,12 @@
+// components/MyTicket.jsx
 import React, { useState, useMemo } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Bell, User, LogOut, LayoutDashboard, Ticket, ClipboardList, ChevronRight, Search, ChevronDown, X } from 'lucide-react'; // Added Search, ChevronDown, X for MyTicket content
+// import { Search, ChevronDown, X } from 'lucide-react'; // Uncomment if you use them directly here
 
-// SidebarItem component - This is a helper component for the layout
-const SidebarItem = ({ icon, label, isActive, onClick }) => (
-  <li
-    onClick={onClick}
-    className={`relative flex items-center p-3 rounded-md cursor-pointer transition-colors duration-200 ${
-      isActive ? 'bg-white text-black font-semibold shadow-md' : 'hover:bg-white text-gray-700'
-    }`}
-  >
-    {isActive && <ChevronRight size={20} className="absolute left-0 ml-2 text-black" />}
-    <div className="ml-6 mr-3">{icon}</div>
-    <span className="flex-grow">{label}</span>
-  </li>
-);
+export default function MyTicket() {
+  // ... (your existing state and functions) ...
 
-// MyTicket component - This now includes the layout structure and the MyTicket page content
-export default function MyTicket() { // Renamed from DashboardLayout to MyTicket
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  // Logic for sidebar item selection (from original DashboardLayout)
-  const getSelectedItem = () => {
-    if (location.pathname.includes('new-ticket')) return 'newTicket';
-    if (location.pathname.includes('my-ticket')) return 'myTicket';
-    return 'dashboard';
-  };
-  const selectedSidebarItem = getSelectedItem();
-  const handleSidebarClick = (item, path) => {
-    navigate(path);
-  };
-
-  // MyTicket specific state and logic (from previous MyTicket component)
   const initialTickets = [
+    // ... (your existing ticket data) ...
     {
       id: 'TICKET-001',
       ticketNo: 'TICKET-001',
@@ -119,7 +92,7 @@ export default function MyTicket() { // Renamed from DashboardLayout to MyTicket
       createdAt: new Date('2024-06-30T16:45:00Z'),
       userId: 'user127',
     },
-     {
+      {
       id: 'TICKET-006',
       ticketNo: 'TICKET-006',
       subject: 'New software license request',
@@ -155,27 +128,24 @@ export default function MyTicket() { // Renamed from DashboardLayout to MyTicket
     },
   ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()); // Sort by createdAt descending
 
-// 👇 This function gets all tickets from localStorage + your hardcoded tickets
-const getAllTickets = () => {
-  const localTickets = JSON.parse(localStorage.getItem('tickets')) || [];
-  const all = [...localTickets, ...initialTickets];
+  const getAllTickets = () => {
+    const localTickets = JSON.parse(localStorage.getItem('tickets')) || [];
+    const all = [...localTickets, ...initialTickets];
 
-  // Make sure all tickets have Date objects
-  return all.map(ticket => ({
-    ...ticket,
-    createdAt: new Date(ticket.createdAt)
-  })).sort((a, b) => b.createdAt - a.createdAt);
-};
+    // Make sure all tickets have Date objects
+    return all.map(ticket => ({
+      ...ticket,
+      createdAt: new Date(ticket.createdAt)
+    })).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()); // Ensure consistent sorting
+  };
 
-// 👇 Use this as your state declaration
-const [tickets, setTickets] = useState(getAllTickets());
+  const [tickets, setTickets] = useState(getAllTickets());
   const [searchTerm, setSearchTerm] = useState('');
-  const [entriesPerPage, setEntriesPerPage] = useState(5); // Default to 5 entries
+  const [entriesPerPage, setEntriesPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedTicket, setSelectedTicket] = useState(null); // State for modal
-  const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
+  const [selectedTicket, setSelectedTicket] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Filter and paginate tickets
   const filteredTickets = useMemo(() => {
     return tickets.filter(ticket =>
       Object.values(ticket).some(value =>
@@ -201,199 +171,176 @@ const [tickets, setTickets] = useState(getAllTickets());
     setSelectedTicket(null);
   };
 
+  // New handler for clicking outside the modal content
+  const handleOverlayClick = (e) => {
+    // Check if the click occurred directly on the overlay div (not its children)
+    if (e.target.id === 'modal-overlay') {
+      closeModal();
+    }
+  };
+
   const handleEntriesChange = (e) => {
     setEntriesPerPage(Number(e.target.value));
-    setCurrentPage(1); // Reset to first page on entries change
+    setCurrentPage(1);
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100 font-inter">
-      {/* Top Navbar */}
-      <nav className="flex items-center justify-between bg-[#55D6C2] px-6 py-3 shadow-md">
-        <h1 className="text-[48px] font-bold italic text-[#FFFFFF]">Helpdesk</h1>
-        <div className="flex items-center space-x-6">
-          <div className="flex items-center bg-[#000000] rounded-full p-1">
-            <span className="px-3 py-1 rounded-full text-white text-sm font-medium">BM</span>
-            <span className="px-3 py-1 rounded-full bg-[#55D6C2] text-gray-700 text-sm font-medium">BI</span>
-          </div>
-          <Bell className="text-[#000000] cursor-pointer" size={22} />
-          <User className="text-[#000000] cursor-pointer" size={22} />
-          <LogOut className="text-[#000000] cursor-pointer" size={22} />
+    <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col">
+      <h2 className="text-[36px] font-bold text-gray-800 mb-6 text-center">List of Tickets</h2>
+
+      <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+        {/* Search Input */}
+        <div className="relative w-full md:w-1/3">
+          <input
+            type="text"
+            placeholder="Find a ticket"
+            className="w-full pl-10 pr-4 py-2 rounded-md bg-gray-100 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#55D6C2]"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          {/* You'll need to import Search icon if it's not provided by Layout's lucide-react import */}
+          {/* <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" /> */}
         </div>
-      </nav>
 
-      <div className="flex flex-1">
-        {/* Sidebar */}
-        <aside className="w-64 bg-gray-200 p-5 shadow-md relative z-10">
-          <ul className="space-y-3">
-            <SidebarItem icon={<LayoutDashboard size={20} />} label="Dashboard" isActive={selectedSidebarItem === 'dashboard'} onClick={() => handleSidebarClick('dashboard', '/dashboard')} />
-            <SidebarItem icon={<Ticket size={20} />} label="New Ticket" isActive={selectedSidebarItem === 'newTicket'} onClick={() => handleSidebarClick('newTicket', '/new-ticket')} />
-            <SidebarItem icon={<ClipboardList size={20} />} label="My Ticket" isActive={selectedSidebarItem === 'myTicket'} onClick={() => handleSidebarClick('myTicket', '/my-ticket')} />
-          </ul>
-        </aside>
-
-        {/* Main Content + Footer wrapper */}
-        <div className="flex flex-col flex-1">
-          <main className="flex-1 p-8 overflow-auto">
-            {/* The content of MyTicket component goes here, now directly embedded */}
-            <div className="bg-white p-6 rounded-lg shadow-lg min-h-[60vh] flex flex-col">
-              <h2 className="text-[36px] font-bold text-gray-800 mb-6 text-center">List of Tickets</h2>
-
-              <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-                {/* Search Input */}
-                <div className="relative w-full md:w-1/3">
-                  <input
-                    type="text"
-                    placeholder="Find a ticket"
-                    className="w-full pl-10 pr-4 py-2 rounded-md bg-gray-100 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#55D6C2]"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                  <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                </div>
-
-                {/* Show Entries Dropdown */}
-                <div className="flex items-center space-x-2">
-                  <label htmlFor="entries-per-page" className="text-gray-700 text-sm font-medium">Show:</label>
-                  <div className="relative">
-                    <select
-                      id="entries-per-page"
-                      className="appearance-none bg-gray-100 border border-gray-300 rounded-md py-2 pl-3 pr-8 focus:outline-none focus:ring-2 focus:ring-[#55D6C2] cursor-pointer"
-                      value={entriesPerPage}
-                      onChange={handleEntriesChange}
-                    >
-                      <option value="5">5</option>
-                      <option value="10">10</option>
-                      <option value="20">20</option>
-                      <option value={tickets.length}>All</option>
-                    </select>
-                    <ChevronDown size={16} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
-                  </div>
-                  <span className="text-gray-700 text-sm font-medium">Entries</span>
-                </div>
-              </div>
-
-              {/* Table-like Headers */}
-              <div className="grid grid-cols-6 gap-4 py-3 px-4 bg-gray-200 rounded-t-md font-semibold text-gray-700 text-sm border-b border-gray-300">
-                <div className="col-span-1">Ticket No.</div>
-                <div className="col-span-2">Subject</div>
-                <div className="col-span-1">Status</div>
-                <div className="col-span-1">Supported by</div>
-                <div className="col-span-1">Date</div>
-              </div>
-
-              {/* Ticket List Items */}
-              <div className="flex-1 overflow-auto">
-                {paginatedTickets.length > 0 ? (
-                  paginatedTickets.map(ticket => (
-                    <div
-                      key={ticket.id}
-                      className="grid grid-cols-6 gap-4 py-3 px-4 border-b border-gray-200 hover:bg-gray-50 cursor-pointer text-sm text-gray-800"
-                      onClick={() => handleTicketClick(ticket)}
-                    >
-                      <div className="col-span-1 font-medium text-[#55D6C2]">{ticket.ticketNo}</div>
-                      <div className="col-span-2 truncate">{ticket.subject}</div>
-                      <div className="col-span-1">
-                        <span className={`px-2 py-1 rounded-full text-xs font-semibold
-                          ${ticket.status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
-                            ticket.status === 'On Hold' ? 'bg-yellow-100 text-yellow-800' :
-                            ticket.status === 'Closed' ? 'bg-green-100 text-green-800' :
-                            'bg-gray-100 text-gray-800'
-                          }`}
-                        >
-                          {ticket.status}
-                        </span>
-                      </div>
-                      <div className="col-span-1">{ticket.supportedBy}</div>
-                      <div className="col-span-1">{ticket.date}</div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-center py-8 text-gray-500">No tickets found.</div>
-                )}
-              </div>
-
-              {/* Pagination Controls */}
-              <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
-                <span className="text-sm text-gray-700">
-                  Showing {Math.min((currentPage - 1) * entriesPerPage + 1, filteredTickets.length)} to {Math.min(currentPage * entriesPerPage, filteredTickets.length)} of {filteredTickets.length} entries
-                </span>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                    disabled={currentPage === 1}
-                    className="px-4 py-2 rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Previous
-                  </button>
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                    <button
-                      key={page}
-                      onClick={() => setCurrentPage(page)}
-                      className={`px-4 py-2 rounded-md ${currentPage === page ? 'bg-[#55D6C2] text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
-                    >
-                      {page}
-                    </button>
-                  ))}
-                  <button
-                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                    disabled={currentPage === totalPages}
-                    className="px-4 py-2 rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Next
-                  </button>
-                </div>
-              </div>
-
-              {/* Ticket Detail Modal */}
-              {isModalOpen && selectedTicket && (
-                <div className="fixed inset-0 bg-transparent flex items-center justify-center z-50 p-4">
-                  <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md relative">
-                    <button onClick={closeModal} className="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
-                      <X size={24} />
-                    </button>
-                    <h3 className="text-2xl font-bold text-gray-800 mb-4 text-center">Ticket Details</h3>
-                    <div className="space-y-3 text-gray-700">
-                      <p><strong>Ticket No.:</strong> {selectedTicket.ticketNo}</p>
-                      <p><strong>Subject:</strong> {selectedTicket.subject}</p>
-                      <p><strong>Status:</strong> <span className={`px-2 py-1 rounded-full text-sm font-semibold
-                        ${selectedTicket.status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
-                          selectedTicket.status === 'On Hold' ? 'bg-yellow-100 text-yellow-800' :
-                          selectedTicket.status === 'Closed' ? 'bg-green-100 text-green-800' :
-                          'bg-gray-100 text-gray-800'
-                        }`}
-                      >
-                        {selectedTicket.status}
-                      </span></p>
-                      <p><strong>Supported By:</strong> {selectedTicket.supportedBy}</p>
-                      <p><strong>Date:</strong> {selectedTicket.date}</p>
-                      <p><strong>Name:</strong> {selectedTicket.name}</p>
-                      <p><strong>Department:</strong> {selectedTicket.department}</p>
-                      <p><strong>Category:</strong> {selectedTicket.category}</p>
-                      <p><strong>Type:</strong> {selectedTicket.type}</p>
-                      <p><strong>Priority:</strong> {selectedTicket.priority}</p>
-                      <p><strong>Rate:</strong> {selectedTicket.rate}</p>
-                      <p><strong>Description:</strong></p>
-                      <p className="bg-gray-100 p-3 rounded-md border border-gray-200 whitespace-pre-wrap">{selectedTicket.description}</p>
-                      <p className="text-xs text-gray-500 mt-4">
-                        Created At: {selectedTicket.createdAt?.toLocaleString()}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        User ID: {selectedTicket.userId}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </main>
-
-          {/* Footer */}
-          <footer className="bg-gray-800 text-white p-3 text-center text-sm w-full">
-            <p>&copy; {new Date().getFullYear()} Helpdesk System. All rights reserved.</p>
-          </footer>
+        {/* Show Entries Dropdown */}
+        <div className="flex items-center space-x-2">
+          <label htmlFor="entries-per-page" className="text-gray-700 text-sm font-medium">Show:</label>
+          <div className="relative">
+            <select
+              id="entries-per-page"
+              className="appearance-none bg-gray-100 border border-gray-300 rounded-md py-2 pl-3 pr-8 focus:outline-none focus:ring-2 focus:ring-[#55D6C2] cursor-pointer"
+              value={entriesPerPage}
+              onChange={handleEntriesChange}
+            >
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value={tickets.length}>All</option>
+            </select>
+            {/* You'll need to import ChevronDown icon */}
+            {/* <ChevronDown size={16} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" /> */}
+          </div>
+          <span className="text-gray-700 text-sm font-medium">Entries</span>
         </div>
       </div>
+
+      {/* Table-like Headers */}
+      <div className="grid grid-cols-6 gap-4 py-3 px-4 bg-gray-200 rounded-t-md font-semibold text-gray-700 text-sm border-b border-gray-300">
+        <div className="col-span-1">Ticket No.</div>
+        <div className="col-span-2">Subject</div>
+        <div className="col-span-1">Status</div>
+        <div className="col-span-1">Supported by</div>
+        <div className="col-span-1">Date</div>
+      </div>
+
+      {/* Ticket List Items */}
+      <div className="flex-1 overflow-auto">
+        {paginatedTickets.length > 0 ? (
+          paginatedTickets.map(ticket => (
+            <div
+              key={ticket.id}
+              className="grid grid-cols-6 gap-4 py-3 px-4 border-b border-gray-200 hover:bg-gray-50 cursor-pointer text-sm text-gray-800"
+              onClick={() => handleTicketClick(ticket)}
+            >
+              <div className="col-span-1 font-medium text-[#55D6C2]">{ticket.ticketNo}</div>
+              <div className="col-span-2 truncate">{ticket.subject}</div>
+              <div className="col-span-1">
+                <span className={`px-2 py-1 rounded-full text-xs font-semibold
+                  ${ticket.status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
+                    ticket.status === 'On Hold' ? 'bg-yellow-100 text-yellow-800' :
+                    ticket.status === 'Closed' ? 'bg-green-100 text-green-800' :
+                    'bg-gray-100 text-gray-800'
+                  }`}
+                >
+                  {ticket.status}
+                </span>
+              </div>
+              <div className="col-span-1">{ticket.supportedBy}</div>
+              <div className="col-span-1">{ticket.date}</div>
+            </div>
+          ))
+        ) : (
+          <div className="text-center py-8 text-gray-500">No tickets found.</div>
+        )}
+      </div>
+
+      {/* Pagination Controls */}
+      <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
+        <span className="text-sm text-gray-700">
+          Showing {Math.min((currentPage - 1) * entriesPerPage + 1, filteredTickets.length)} to {Math.min(currentPage * entriesPerPage, filteredTickets.length)} of {filteredTickets.length} entries
+        </span>
+        <div className="flex space-x-2">
+          <button
+            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="px-4 py-2 rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Previous
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`px-4 py-2 rounded-md ${currentPage === page ? 'bg-[#55D6C2] text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+            >
+              {page}
+            </button>
+          ))}
+          <button
+            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+
+      {/* Ticket Detail Modal */}
+      {isModalOpen && selectedTicket && (
+        // Add id="modal-overlay" and onClick handler here
+        <div
+          id="modal-overlay" // Important: Add an ID to easily target this specific div
+          className="fixed inset-0 bg-transparent flex items-center justify-center z-50 p-4"
+          onClick={handleOverlayClick} // Add the click handler
+        >
+          <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md relative">
+            <button onClick={closeModal} className="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
+              {/* <X size={24} /> */}
+            </button>
+            <h3 className="text-2xl font-bold text-gray-800 mb-4 text-center">Ticket Details</h3>
+            <div className="space-y-3 text-gray-700">
+              <p><strong>Ticket No.:</strong> {selectedTicket.ticketNo}</p>
+              <p><strong>Subject:</strong> {selectedTicket.subject}</p>
+              <p><strong>Status:</strong> <span className={`px-2 py-1 rounded-full text-sm font-semibold
+                ${selectedTicket.status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
+                  selectedTicket.status === 'On Hold' ? 'bg-yellow-100 text-yellow-800' :
+                  selectedTicket.status === 'Closed' ? 'bg-green-100 text-green-800' :
+                  'bg-gray-100 text-gray-800'
+                }`}
+              >
+                {selectedTicket.status}
+              </span></p>
+              <p><strong>Supported By:</strong> {selectedTicket.supportedBy}</p>
+              <p><strong>Date:</strong> {selectedTicket.date}</p>
+              <p><strong>Name:</strong> {selectedTicket.name}</p>
+              <p><strong>Department:</strong> {selectedTicket.department}</p>
+              <p><strong>Category:</strong> {selectedTicket.category}</p>
+              <p><strong>Type:</strong> {selectedTicket.type}</p>
+              <p><strong>Priority:</strong> {selectedTicket.priority}</p>
+              <p><strong>Rate:</strong> {selectedTicket.rate}</p>
+              <p><strong>Description:</strong></p>
+              <p className="bg-gray-100 p-3 rounded-md border border-gray-200 whitespace-pre-wrap">{selectedTicket.description}</p>
+              <p className="text-xs text-gray-500 mt-4">
+                Created At: {selectedTicket.createdAt?.toLocaleString()}
+              </p>
+              <p className="text-xs text-gray-500">
+                User ID: {selectedTicket.userId}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
