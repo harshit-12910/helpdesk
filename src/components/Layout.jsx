@@ -1,9 +1,7 @@
-// src/components/Layout.jsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Bell, User, LogOut, LayoutDashboard, Ticket, ClipboardList, ChevronRight } from 'lucide-react';
 
-// --- SidebarItem Component (Defined here as it's used only within Layout) ---
 const SidebarItem = ({ icon, label, isActive, onClick }) => (
   <li
     onClick={onClick}
@@ -19,7 +17,6 @@ const SidebarItem = ({ icon, label, isActive, onClick }) => (
   </li>
 );
 
-// --- Main Layout Component ---
 export default function Layout() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -57,18 +54,16 @@ export default function Layout() {
     navigate(path);
   };
 
-  // --- Layout Constants ---
-  const NAVBAR_HEIGHT_PX = 72; // Adjusted to reflect actual height if py-3 and text-4xl
-  const SIDEBAR_WIDTH_PX = 256; // Tailwind's w-64
-  const FOOTER_HEIGHT_PX = 48; // Estimated height
+  const NAVBAR_HEIGHT_PX = 72; 
+  const SIDEBAR_WIDTH_PX = 256; 
+  const FOOTER_HEIGHT_PX = 48; 
 
   return (
     <div className="flex flex-col min-h-screen bg-[#ffffff] font-inter">
 
-      {/* Top Navbar: Fixed at the top */}
       <nav
         className={`flex items-center justify-between bg-[#55D6C2] px-6 py-3 shadow-md fixed top-0 left-0 w-full z-50`}
-        style={{ height: `${NAVBAR_HEIGHT_PX}px` }} // Explicitly set height
+        style={{ height: `${NAVBAR_HEIGHT_PX}px` }} 
       >
         <h1 className="text-[48px] font-bold italic text-[#FFFFFF]">Helpdesk</h1>
         <div className="flex items-center space-x-6">
@@ -86,13 +81,8 @@ export default function Layout() {
         </div>
       </nav>
 
-      {/* Main Content Area Wrapper: Pushed down by top navbar, fills remaining height */}
-      {/* This div starts *below* the navbar */}
       <div className={`flex flex-1`} style={{ paddingTop: `${NAVBAR_HEIGHT_PX}px` }}>
 
-        {/* Sidebar: Fixed on the left, starts below top navbar, and goes to the bottom */}
-        {/* h-screen takes full viewport height. top-[...] positions it below navbar. */}
-        {/* overflow-y-auto added to allow sidebar content to scroll if it overflows */}
         <aside
           className={`w-64 bg-gray-200 p-5 shadow-md fixed left-0 h-screen z-40 overflow-y-auto`}
           style={{ top: `${NAVBAR_HEIGHT_PX}px` }}
@@ -119,13 +109,10 @@ export default function Layout() {
           </ul>
         </aside>
 
-        {/* Content Area for Main Pages + Footer Wrapper */}
-        {/* flex-1 to take remaining horizontal space, pl-[...] to clear sidebar */}
+       
         <div className={`flex flex-col flex-1`} style={{ paddingLeft: `${SIDEBAR_WIDTH_PX}px` }}>
 
-          {/* Main content area: Where specific page components render */}
-          {/* min-h-[calc(100vh - ${NAVBAR_HEIGHT_PX}px - ${FOOTER_HEIGHT_PX}px)] ensures it fills available vertical space */}
-          {/* overflow-y-auto allows page content to scroll independently */}
+          
           <main
             className={`flex-1 p-8 overflow-y-auto`}
             style={{ minHeight: `calc(100vh - ${NAVBAR_HEIGHT_PX}px - ${FOOTER_HEIGHT_PX}px)` }}
@@ -133,7 +120,6 @@ export default function Layout() {
             <Outlet />
           </main>
 
-          {/* Footer: Fixed at the bottom, spans full width, pushed right by sidebar */}
           <footer
             className={`bg-gray-800 text-white p-3 text-center text-sm w-full fixed bottom-0 z-50`}
             style={{ left: `${SIDEBAR_WIDTH_PX}px`, height: `${FOOTER_HEIGHT_PX}px` }}

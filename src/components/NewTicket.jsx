@@ -1,8 +1,7 @@
-import React, { useState } from 'react'; // Removed useEffect as it's no longer needed here
-import { useNavigate } from 'react-router-dom'; // Keep useNavigate for form submission navigation
+import React, { useState } from 'react'; 
+import { useNavigate } from 'react-router-dom'; 
 
-// REMOVED ALL LUCIDE-REACT ICON IMPORTS. They are only needed in Layout.jsx now.
-// REMOVED useLocation and selectedSidebarItem state/logic. They are only needed in Layout.jsx now.
+
 
 export default function NewTicket() {
   const navigate = useNavigate();
@@ -33,27 +32,22 @@ export default function NewTicket() {
       priority,
       description,
       status: 'In Progress',
-      supportedBy: 'IT Support', // Or dynamic value if available
-      rate: 0, // Initial rating
-      createdAt: new Date().toISOString(), // Use ISO string for consistent date storage
-      userId: 'currentUserId', // Replace with actual user ID from context/auth
+      supportedBy: 'IT Support', 
+      rate: 0, 
+      createdAt: new Date().toISOString(), 
+      userId: 'currentUserId',
     };
 
-    // Retrieve existing tickets, add the new one, and save to localStorage
     const existing = JSON.parse(localStorage.getItem('tickets')) || [];
-    existing.unshift(newTicket); // Add new ticket to the beginning of the array
+    existing.unshift(newTicket); 
     localStorage.setItem('tickets', JSON.stringify(existing));
 
-    // After submission, navigate to My Tickets page
     navigate('/my-ticket');
 
-    // Optionally clear form fields after submission (if not navigating away)
-    // setTicketNo(''); setDate(''); // ...and so on for all fields
   };
 
   return (
-    // THIS IS THE ONLY WRAPPER DIV NEEDED FOR THE PAGE'S CONTENT.
-    // All other layout elements (nav, aside, footer) are provided by Layout.jsx.
+  
     <div className="p-8">
       <h2 className="text-[36px] font-bold text-gray-800 mb-6 text-center">Create New Ticket</h2>
       <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
@@ -120,4 +114,3 @@ export default function NewTicket() {
   );
 }
 
-// REMOVED: SidebarItem component definition. It should only be in Layout.jsx.

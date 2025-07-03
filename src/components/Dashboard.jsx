@@ -1,6 +1,3 @@
-// components/Dashboard.jsx
-import React from 'react';
-
 export default function Dashboard() {
   const statCardsData = [
     { title: "Total Tickets", value: "12", bg: "bg-[#2F82FF]", text: "text-[#05386B]" },

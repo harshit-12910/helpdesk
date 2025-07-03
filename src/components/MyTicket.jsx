@@ -1,12 +1,8 @@
-// components/MyTicket.jsx
-import React, { useState, useMemo } from 'react';
-// import { Search, ChevronDown, X } from 'lucide-react'; // Uncomment if you use them directly here
+import { useState, useMemo } from 'react';
 
 export default function MyTicket() {
-  // ... (your existing state and functions) ...
 
   const initialTickets = [
-    // ... (your existing ticket data) ...
     {
       id: 'TICKET-001',
       ticketNo: 'TICKET-001',
@@ -126,17 +122,16 @@ export default function MyTicket() {
       createdAt: new Date('2024-07-02T13:00:00Z'),
       userId: 'user129',
     },
-  ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()); // Sort by createdAt descending
+  ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()); 
 
   const getAllTickets = () => {
     const localTickets = JSON.parse(localStorage.getItem('tickets')) || [];
     const all = [...localTickets, ...initialTickets];
 
-    // Make sure all tickets have Date objects
     return all.map(ticket => ({
       ...ticket,
       createdAt: new Date(ticket.createdAt)
-    })).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()); // Ensure consistent sorting
+    })).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()); 
   };
 
   const [tickets, setTickets] = useState(getAllTickets());
@@ -171,9 +166,7 @@ export default function MyTicket() {
     setSelectedTicket(null);
   };
 
-  // New handler for clicking outside the modal content
   const handleOverlayClick = (e) => {
-    // Check if the click occurred directly on the overlay div (not its children)
     if (e.target.id === 'modal-overlay') {
       closeModal();
     }
@@ -189,7 +182,6 @@ export default function MyTicket() {
       <h2 className="text-[36px] font-bold text-gray-800 mb-6 text-center">List of Tickets</h2>
 
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-        {/* Search Input */}
         <div className="relative w-full md:w-1/3">
           <input
             type="text"
@@ -198,11 +190,9 @@ export default function MyTicket() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          {/* You'll need to import Search icon if it's not provided by Layout's lucide-react import */}
-          {/* <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" /> */}
+         
         </div>
 
-        {/* Show Entries Dropdown */}
         <div className="flex items-center space-x-2">
           <label htmlFor="entries-per-page" className="text-gray-700 text-sm font-medium">Show:</label>
           <div className="relative">
@@ -217,14 +207,12 @@ export default function MyTicket() {
               <option value="20">20</option>
               <option value={tickets.length}>All</option>
             </select>
-            {/* You'll need to import ChevronDown icon */}
-            {/* <ChevronDown size={16} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" /> */}
+            
           </div>
           <span className="text-gray-700 text-sm font-medium">Entries</span>
         </div>
       </div>
 
-      {/* Table-like Headers */}
       <div className="grid grid-cols-6 gap-4 py-3 px-4 bg-gray-200 rounded-t-md font-semibold text-gray-700 text-sm border-b border-gray-300">
         <div className="col-span-1">Ticket No.</div>
         <div className="col-span-2">Subject</div>
@@ -233,7 +221,6 @@ export default function MyTicket() {
         <div className="col-span-1">Date</div>
       </div>
 
-      {/* Ticket List Items */}
       <div className="flex-1 overflow-auto">
         {paginatedTickets.length > 0 ? (
           paginatedTickets.map(ticket => (
@@ -264,7 +251,6 @@ export default function MyTicket() {
         )}
       </div>
 
-      {/* Pagination Controls */}
       <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
         <span className="text-sm text-gray-700">
           Showing {Math.min((currentPage - 1) * entriesPerPage + 1, filteredTickets.length)} to {Math.min(currentPage * entriesPerPage, filteredTickets.length)} of {filteredTickets.length} entries
@@ -296,17 +282,14 @@ export default function MyTicket() {
         </div>
       </div>
 
-      {/* Ticket Detail Modal */}
       {isModalOpen && selectedTicket && (
-        // Add id="modal-overlay" and onClick handler here
         <div
-          id="modal-overlay" // Important: Add an ID to easily target this specific div
+          id="modal-overlay"
           className="fixed inset-0 bg-transparent flex items-center justify-center z-50 p-4"
-          onClick={handleOverlayClick} // Add the click handler
+          onClick={handleOverlayClick} 
         >
           <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md relative">
             <button onClick={closeModal} className="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
-              {/* <X size={24} /> */}
             </button>
             <h3 className="text-2xl font-bold text-gray-800 mb-4 text-center">Ticket Details</h3>
             <div className="space-y-3 text-gray-700">

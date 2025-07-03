@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { User, Star, Pencil } from 'lucide-react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 
 const UserProfilePage = () => {
-  const navigate = useNavigate(); // Initialize useNavigate hook
+  const navigate = useNavigate(); 
 
-  // Placeholder user data
   const user = {
     username: 'JohnDoe',
     contactNumber: '123-456-7890',
@@ -24,9 +23,7 @@ const UserProfilePage = () => {
     setRating(0);
   };
 
-  // Modified: Handle Edit Profile function to navigate
   const handleEditProfile = () => {
-    // This will navigate to the /edit-profile path defined in App.jsx
     navigate('/edit-profile');
   };
 
@@ -39,7 +36,6 @@ const UserProfilePage = () => {
       <div className="bg-[#55D6C2] p-8 rounded-[20px] shadow-xl w-full max-w-5xl min-h-[600px] flex items-start justify-start relative">
         <div className="pl-8 flex flex-col md:flex-row gap-6 w-full pt-2 justify-between">
 
-          {/* Left White Box (User Info) */}
           <div className="bg-white p-6 rounded-[20px] shadow-md flex flex-col items-center justify-start text-center md:w-3/6 h-[350px] ml-[-16px]">
             <div className="flex items-center justify-center mb-4 w-full relative">
               <div className="bg-gray-300 rounded-full p-4">
@@ -48,7 +44,7 @@ const UserProfilePage = () => {
               <Pencil
                 size={24}
                 className="text-gray-500 hover:text-gray-700 cursor-pointer absolute top-1 right-1 md:right-2"
-                onClick={handleEditProfile} // Use the new navigation function
+                onClick={handleEditProfile} 
               />
             </div>
 
@@ -60,7 +56,6 @@ const UserProfilePage = () => {
             </div>
           </div>
 
-          {/* Right White Box (Feedback) */}
           <div className="bg-white p-6 rounded-[20px] shadow-md flex flex-col items-center md:w-1/3 h-[340px]">
             <h2 className="text-3xl font-semibold text-gray-800 mb-6">Give Your Feedback</h2>
             <textarea
