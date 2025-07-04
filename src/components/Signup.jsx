@@ -1,31 +1,30 @@
-// components/Signup.jsx
 import { useState } from "react";
 import Input from "./Input";
 import Button from "./Button";
 import { useNavigate } from "react-router-dom";
-import { mockSignup } from '../auth/authService'; // Import mockSignup
+import { mockSignup } from '../auth/authService';
 
 export default function Signup() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState(""); // Add error state
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  const handleSignup = async (e) => { // Made async
+  const handleSignup = async (e) => {
     e.preventDefault();
-    setErrorMessage(""); // Clear previous errors
+    setErrorMessage(""); 
 
     if (!username || !email || !password) {
-      setErrorMessage("Please fill in all fields."); // Set error message
+      setErrorMessage("Please fill in all fields."); 
       return;
     }
 
     try {
-      const result = await mockSignup(username, email, password); // Pass username to mockSignup
+      const result = await mockSignup(username, email, password); 
       if (result.success) {
-        alert("Signup successful! Please sign in."); // Optional: alert user
-        navigate("/signin"); // Redirect to Sign In page
+        alert("Signup successful! Please sign in."); 
+        navigate("/signin");
       } else {
         setErrorMessage(result.message || "Signup failed. Please try again.");
       }
@@ -57,7 +56,7 @@ export default function Signup() {
             placeholder="Username"
             label="Username"
             value={username}
-            onChange={(e) => { setUsername(e.target.value); setErrorMessage(""); }} // Clear error on change
+            onChange={(e) => { setUsername(e.target.value); setErrorMessage(""); }}
           />
 
           <Input
@@ -66,7 +65,7 @@ export default function Signup() {
             label="Email"
             type="email"
             value={email}
-            onChange={(e) => { setEmail(e.target.value); setErrorMessage(""); }} // Clear error on change
+            onChange={(e) => { setEmail(e.target.value); setErrorMessage(""); }} 
           />
 
           <Input
@@ -75,7 +74,7 @@ export default function Signup() {
             label="Password"
             type="password"
             value={password}
-            onChange={(e) => { setPassword(e.target.value); setErrorMessage(""); }} // Clear error on change
+            onChange={(e) => { setPassword(e.target.value); setErrorMessage(""); }}
           />
 
           <Button
@@ -85,7 +84,7 @@ export default function Signup() {
             Sign Up
           </Button>
 
-          {errorMessage && ( // Display error message
+          {errorMessage && ( 
             <p className="absolute top-[550px] left-[199px] w-[601px] text-center text-red-500 text-sm">
               {errorMessage}
             </p>

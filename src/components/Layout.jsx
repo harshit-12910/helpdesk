@@ -1,26 +1,24 @@
-// components/Layout.jsx
 import { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import {
   Bell, User, LogOut, LayoutDashboard, Ticket, ClipboardList, ChevronRight,
-  Database, Settings, History, // Existing admin icons
-  Users, // Icon for 'User' sub-menu
-  LifeBuoy, // Icon for 'Technical Support' sub-sub-menu
-  Settings as OperationalTeamIcon // Re-using Settings or find a better icon for Operational Team
+  Database, Settings, History, 
+  Users, 
+  LifeBuoy, 
+  Settings as OperationalTeamIcon 
 } from 'lucide-react';
 
 import { mockLogout } from '../auth/authService';
 
-// Reusable SidebarItem component
-// Added an 'isDummy' prop to control clickability and styling
+
 const SidebarItem = ({ icon, label, isActive, onClick, className = '', isDummy = false }) => (
   <li
-    onClick={isDummy ? null : onClick} // No onClick if it's a dummy item
+    onClick={isDummy ? null : onClick} 
     className={`relative flex items-center p-3 rounded-md transition-colors duration-200 ${
       isActive ? 'bg-white text-black font-semibold shadow-md' : 'hover:bg-white text-gray-700'
     } ${isDummy ? 'cursor-default text-gray-500 hover:bg-transparent' : 'cursor-pointer'} ${className}`}
   >
-    {isActive && !isDummy && ( // Only show chevron for active, non-dummy items
+    {isActive && !isDummy && ( 
       <ChevronRight size={20} className="absolute left-0 ml-2 text-black" />
     )}
     <div className="ml-6 mr-3">{icon}</div>
@@ -33,24 +31,20 @@ export default function Layout() {
   const location = useLocation();
 
   const [selectedSidebarItem, setSelectedSidebarItem] = useState(() => {
-    // Determine initial active item based on URL
     const path = location.pathname;
     if (path.includes('dashboard')) return 'dashboard';
     if (path.includes('new-ticket')) return 'newTicket';
     if (path.includes('my-ticket')) return 'myTicket';
     if (path.includes('profile')) return '';
-    // Special handling for Database: if any sub-item is active, select 'userDatabase'
     if (path.includes('admin/user-database') || path.includes('admin/opsteam-database') || path.includes('admin/techsupport-database')) return 'userDatabase';
-    if (path.includes('admin/database')) return 'database'; // Main database item, but we'll auto-redirect to user-database
+    if (path.includes('admin/database')) return 'database'; 
     if (path.includes('admin/settings')) return 'settings';
     if (path.includes('admin/log-history')) return 'logHistory';
     return 'dashboard';
   });
 
   const [userRole, setUserRole] = useState(null);
-  // NEW STATE: To manage the expanded/collapsed state of the 'Database' menu
   const [isDatabaseExpanded, setIsDatabaseExpanded] = useState(() => {
-    // Keep database expanded if any of its children are active
     const path = location.pathname;
     return path.includes('admin/database') ||
            path.includes('admin/user-database') ||
@@ -59,13 +53,11 @@ export default function Layout() {
   });
 
   useEffect(() => {
-    // Update selected sidebar item when location changes
     const path = location.pathname;
     if (path.includes('dashboard')) setSelectedSidebarItem('dashboard');
     else if (path.includes('new-ticket')) setSelectedSidebarItem('newTicket');
     else if (path.includes('my-ticket')) setSelectedSidebarItem('myTicket');
     else if (path.includes('profile')) setSelectedSidebarItem('');
-    // Update active state for new admin paths
     else if (path.includes('admin/user-database')) setSelectedSidebarItem('userDatabase');
     else if (path.includes('admin/opsteam-database')) setSelectedSidebarItem('operationalTeamDatabase'); // This won't technically be 'selected' but it's for tracking
     else if (path.includes('admin/techsupport-database')) setSelectedSidebarItem('technicalSupportDatabase'); // This won't technically be 'selected' but it's for tracking
@@ -74,7 +66,6 @@ export default function Layout() {
     else if (path.includes('admin/log-history')) setSelectedSidebarItem('logHistory');
     else setSelectedSidebarItem('');
 
-    // Update database expansion state - ensure it's expanded if on any database-related route
     setIsDatabaseExpanded(
       path.includes('admin/database') ||
       path.includes('admin/user-database') ||
@@ -82,7 +73,6 @@ export default function Layout() {
       path.includes('admin/techsupport-database')
     );
 
-    // Authentication and role management
     const storedUser = localStorage.getItem('currentUser');
     if (storedUser) {
       try {
@@ -128,9 +118,7 @@ export default function Layout() {
     navigate(path);
   };
 
-  // UPDATED: Handler for clicking the main 'Database' item
   const handleDatabaseClick = () => {
-    // When Database is clicked, always expand it and navigate to 'User'
     setIsDatabaseExpanded(true);
     handleSidebarClick('userDatabase', '/admin/user-database');
   };
@@ -194,43 +182,39 @@ export default function Layout() {
 
             {userRole === 'admin' && (
               <>
-                {/* Main Database Item - Always triggers User sub-item */}
                 <SidebarItem
                   icon={<Database size={20} />}
                   label="Database"
-                  isActive={isDatabaseExpanded && selectedSidebarItem === 'userDatabase'} // Active if User is active
-                  onClick={handleDatabaseClick} // Use the new click handler
+                  isActive={isDatabaseExpanded && selectedSidebarItem === 'userDatabase'} 
+                  onClick={handleDatabaseClick} 
                 />
 
-                {/* Nested Database Items - Conditionally rendered based on isDatabaseExpanded */}
                 {isDatabaseExpanded && (
-                  <ul className="ml-4 space-y-3"> {/* Indent the sub-menu */}
-                    {/* User Sub-item - This is the default selected item */}
+                  <ul className="ml-4 space-y-3"> 
                     <SidebarItem
-                      icon={<Users size={20} />} // User icon
+                      icon={<Users size={20} />} 
                       label="User"
-                      isActive={selectedSidebarItem === 'userDatabase'} // Active when Database is selected and expanded
+                      isActive={selectedSidebarItem === 'userDatabase'}
                       onClick={() => handleSidebarClick('userDatabase', '/admin/user-database')}
-                      className="pl-4" // Further indent for 'User'
+                      className="pl-4" 
                     />
-                    {/* Operational Team (Dummy) & Technical Support (Dummy) */}
-                    {selectedSidebarItem === 'userDatabase' && ( // Only show these if 'User' is selected/active
-                        <ul className="ml-8 space-y-3"> {/* Indent for Operational/Technical */}
+                    {selectedSidebarItem === 'userDatabase' && ( 
+                        <ul className="ml-8 space-y-3"> 
                             <SidebarItem
-                                icon={<OperationalTeamIcon size={20} />} // Icon for Operational Team
+                                icon={<OperationalTeamIcon size={20} />}
                                 label="Operational Team"
-                                isActive={false} // Never active
-                                onClick={null} // No click handler
-                                isDummy={true} // Mark as dummy
-                                className="pl-4" // Further indent
+                                isActive={false}
+                                onClick={null} 
+                                isDummy={true} 
+                                className="pl-4" 
                             />
                             <SidebarItem
-                                icon={<LifeBuoy size={20} />} // Icon for Technical Support
+                                icon={<LifeBuoy size={20} />} 
                                 label="Technical Support"
-                                isActive={false} // Never active
-                                onClick={null} // No click handler
-                                isDummy={true} // Mark as dummy
-                                className="pl-4" // Further indent
+                                isActive={false} 
+                                onClick={null} 
+                                isDummy={true} 
+                                className="pl-4" 
                             />
                         </ul>
                     )}

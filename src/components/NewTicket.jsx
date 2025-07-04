@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 export default function NewTicket() {
   const navigate = useNavigate();
 
-  // State for form fields
   const [ticketNo, setTicketNo] = useState('');
   const [date, setDate] = useState('');
   const [name, setName] = useState('');

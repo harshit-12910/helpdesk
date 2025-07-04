@@ -1,7 +1,6 @@
-// components/Signin.jsx
 import { useState } from "react";
-import Input from "./Input"; // Assuming you have this component
-import Button from "./Button"; // Assuming you have this component
+import Input from "./Input";
+import Button from "./Button"; 
 import { useNavigate } from "react-router-dom";
 import { mockLogin } from '../auth/authService';
 
@@ -13,7 +12,7 @@ export default function Signin() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setErrorMessage(""); // Clear previous errors
+    setErrorMessage(""); 
 
     if (!username || !password) {
       setErrorMessage("Please enter both username and password.");
@@ -23,11 +22,9 @@ export default function Signin() {
     try {
       const result = await mockLogin(username, password);
       if (result.success) {
-        // Store user info (including role) in localStorage
         localStorage.setItem('currentUser', JSON.stringify(result.user));
         navigate("/dashboard");
       } else {
-        // Display the message returned by mockLogin if login failed
         setErrorMessage(result.message || "Login failed. Please check your credentials.");
       }
     } catch (error) {

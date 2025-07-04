@@ -1,5 +1,3 @@
-// src/pages/AdminAllTicketsPage.jsx
-import React from 'react';
 
 const AdminAllTicketsPage = () => {
   return (
